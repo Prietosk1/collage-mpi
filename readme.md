@@ -2,14 +2,14 @@
 
 Este proyecto implementa un sistema distribuido para el procesamiento de video utilizando MPI (Message Passing Interface) y FFmpeg, ejecutado sobre un clúster de máquinas virtuales.
 
-## El objetivo es paralelizar dos tareas principales:
+### El objetivo es paralelizar dos tareas principales:
 
 Segmentación de videos
 Generación de collages a partir de los segmentos
 
 El sistema está diseñado bajo un esquema Master-Worker, donde un nodo principal distribuye las tareas entre varios nodos trabajadores.
 
-# 🏗️ Arquitectura del sistema
+## 🏗️ Arquitectura del sistema
 
 El clúster está compuesto por:
 
@@ -18,7 +18,7 @@ El clúster está compuesto por:
 
 Comunicación entre nodos mediante MPI (mpi4py).
 
-# 📁 Estructura del proyecto
+## 📁 Estructura del proyecto
 /shared/proyecto/
 │
 ├── videos_originales/      # 8 videos de entrada
@@ -32,7 +32,7 @@ Comunicación entre nodos mediante MPI (mpi4py).
 
 Cada video de entrada (≈2 minutos) se divide en segmentos de 10 segundos usando FFmpeg.
 
-# Características:
+## Características:
 Cada video genera 12 segmentos
 Total: 96 segmentos
 Paralelización:
@@ -54,7 +54,7 @@ FFmpeg con filtro xstack
 Escalado uniforme (320x180 por video)
 Layout 2x4 (8 videos por collage)
 
-# ⚙️ Paralelización con MPI
+## ⚙️ Paralelización con MPI
 Modelo Master-Worker
 Master (rank 0):
 Distribuye tareas
@@ -63,36 +63,36 @@ Workers (rank 1–4):
 Ejecutan FFmpeg en paralelo
 Distribución:
 
-# Segmentación:
+## Segmentación:
 2 videos por worker
 Collages:
 3 collages por worker
 
-# 🧪 Tecnologías usadas
+## 🧪 Tecnologías usadas
 Python 3
 mpi4py
 FFmpeg
 Ubuntu Server
 OpenMPI / MPICH
 
-# 🚀 Ejecución del sistema
+## 🚀 Ejecución del sistema
 Segmentación:
 mpirun -np 5 -machinefile ~/hosts python3 /shared/proyecto/scripts/segmentador_mpi.py
 Collages:
 mpirun -np 5 -machinefile ~/hosts python3 /shared/proyecto/scripts/collage_mpi.py
 
-# 📦 Resultados
+## 📦 Resultados
 8 videos originales
 96 segmentos de video
 12 collages finales en formato mosaico 2x4
 
-# ⚠️ Consideraciones
+## ⚠️ Consideraciones
 Todos los nodos deben tener:
 FFmpeg instalado
 mpi4py instalado
 acceso a /shared/proyecto
 
-# Todos los videos deben tener:
+## Todos los videos deben tener:
 misma resolución
 mismo frame rate
 🧩 Problemas encontrados y soluciones
