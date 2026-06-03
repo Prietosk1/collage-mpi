@@ -20,15 +20,26 @@ Comunicación entre nodos mediante MPI (mpi4py).
 
 ## 📁 Estructura del proyecto
 /shared/proyecto/
+
 │
+
 ├── videos_originales/      # 8 videos de entrada
+
 ├── segmentos/              # 96 videos segmentados (12 por video)
+
 ├── collages/              # 12 videos finales tipo mosaico
+
 └── scripts/
+
     ├── segmentador_mpi.py
+    
     ├── segmentar-video.py
+
+    ├── generar_collage
+    
     └── collage_mpi.py
-🎬 Fase 1: Segmentación de videos
+    
+## 🎬 Segmentación de videos
 
 Cada video de entrada (≈2 minutos) se divide en segmentos de 10 segundos usando FFmpeg.
 
@@ -44,17 +55,17 @@ FFmpeg (-ss, -t, -c copy)
 
 Los segmentos se combinan en mosaicos.
 
-Lógica:
+### Lógica:
 Collage 1 → seg01 de todos los videos
 Collage 2 → seg02 de todos los videos
 ...
 Collage 12 → seg12 de todos los videos
-Implementación:
+### Implementación:
 FFmpeg con filtro xstack
 Escalado uniforme (320x180 por video)
 Layout 2x4 (8 videos por collage)
 
-## ⚙️ Paralelización con MPI
+### ⚙️ Paralelización con MPI
 Modelo Master-Worker
 Master (rank 0):
 Distribuye tareas
@@ -63,19 +74,19 @@ Workers (rank 1–4):
 Ejecutan FFmpeg en paralelo
 Distribución:
 
-## Segmentación:
+### Segmentación:
 2 videos por worker
-Collages:
+### Collages:
 3 collages por worker
 
-## 🧪 Tecnologías usadas
+### 🧪 Tecnologías usadas
 Python 3
 mpi4py
 FFmpeg
 Ubuntu Server
 OpenMPI / MPICH
 
-## 🚀 Ejecución del sistema
+### 🚀 Ejecución del sistema
 Segmentación:
 mpirun -np 5 -machinefile ~/hosts python3 /shared/proyecto/scripts/segmentador_mpi.py
 Collages:
@@ -92,14 +103,14 @@ FFmpeg instalado
 mpi4py instalado
 acceso a /shared/proyecto
 
-## Todos los videos deben tener:
+### Todos los videos deben tener:
 misma resolución
 mismo frame rate
-🧩 Problemas encontrados y soluciones
-❌ mpich not found → solucionado con habilitación de repositorios universe
-❌ errores de instalación → corregidos con dpkg --configure -a
-❌ segmentos no visibles → corregido orden y flags de FFmpeg
-❌ collages mal alineados → solucionado con scale + xstack
-🎯 Conclusión
+## 🧩 Problemas encontrados y soluciones
+#### ❌ mpich not found → solucionado con habilitación de repositorios universe
+#### ❌ errores de instalación → corregidos con dpkg --configure -a
+#### ❌ segmentos no visibles → corregido orden y flags de FFmpeg
+#### ❌ collages mal alineados → solucionado con scale + xstack
+## 🎯 Conclusión
 
 El sistema demuestra cómo una carga de trabajo multimedia puede ser distribuida eficientemente en un entorno tipo clúster utilizando MPI, logrando paralelismo tanto en segmentación como en composición final de video.
