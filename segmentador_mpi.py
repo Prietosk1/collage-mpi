@@ -2,6 +2,7 @@ from mpi4py import MPI
 import os
 import subprocess
 
+# Comunicador predefinido de MPI (Message Passing Interface), he incluye todos los proceso de un programa MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
