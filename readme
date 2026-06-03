@@ -1,0 +1,98 @@
+📄 Sistema Distribuido de Procesamiento de Video con MPI + FFmpeg
+
+Este proyecto implementa un sistema distribuido para el procesamiento de video utilizando MPI (Message Passing Interface) y FFmpeg, ejecutado sobre un clúster de máquinas virtuales.
+
+El objetivo es paralelizar dos tareas principales:
+
+Segmentación de videos
+Generación de collages a partir de los segmentos
+
+El sistema está diseñado bajo un esquema Master-Worker, donde un nodo principal distribuye las tareas entre varios nodos trabajadores.
+
+🏗️ Arquitectura del sistema
+
+El clúster está compuesto por:
+
+1 nodo Master
+4 nodos Workers
+
+Comunicación entre nodos mediante MPI (mpi4py).
+
+📁 Estructura del proyecto
+/shared/proyecto/
+│
+├── videos_originales/      # 8 videos de entrada
+├── segmentos/              # 96 videos segmentados (12 por video)
+├── collages/              # 12 videos finales tipo mosaico
+└── scripts/
+    ├── segmentador_mpi.py
+    ├── segmentar-video.py
+    └── collage_mpi.py
+🎬 Fase 1: Segmentación de videos
+
+Cada video de entrada (≈2 minutos) se divide en segmentos de 10 segundos usando FFmpeg.
+
+# Características:
+Cada video genera 12 segmentos
+Total: 96 segmentos
+Paralelización:
+8 videos distribuidos entre 4 workers
+Cada worker procesa 2 videos
+Herramienta utilizada:
+FFmpeg (-ss, -t, -c copy)
+🧵 Fase 2: Generación de collages
+
+Los segmentos se combinan en mosaicos.
+
+Lógica:
+Collage 1 → seg01 de todos los videos
+Collage 2 → seg02 de todos los videos
+...
+Collage 12 → seg12 de todos los videos
+Implementación:
+FFmpeg con filtro xstack
+Escalado uniforme (320x180 por video)
+Layout 2x4 (8 videos por collage)
+⚙️ Paralelización con MPI
+Modelo Master-Worker
+Master (rank 0):
+Distribuye tareas
+No procesa videos
+Workers (rank 1–4):
+Ejecutan FFmpeg en paralelo
+Distribución:
+Segmentación:
+2 videos por worker
+Collages:
+3 collages por worker
+🧪 Tecnologías usadas
+Python 3
+mpi4py
+FFmpeg
+Ubuntu Server
+OpenMPI / MPICH
+🚀 Ejecución del sistema
+Segmentación:
+mpirun -np 5 -machinefile ~/hosts python3 /shared/proyecto/scripts/segmentador_mpi.py
+Collages:
+mpirun -np 5 -machinefile ~/hosts python3 /shared/proyecto/scripts/collage_mpi.py
+📦 Resultados
+8 videos originales
+96 segmentos de video
+12 collages finales en formato mosaico 2x4
+⚠️ Consideraciones
+Todos los nodos deben tener:
+FFmpeg instalado
+mpi4py instalado
+acceso a /shared/proyecto
+Todos los videos deben tener:
+misma resolución
+mismo frame rate
+🧩 Problemas encontrados y soluciones
+❌ mpich not found → solucionado con habilitación de repositorios universe
+❌ errores de instalación → corregidos con dpkg --configure -a
+❌ segmentos no visibles → corregido orden y flags de FFmpeg
+❌ collages mal alineados → solucionado con scale + xstack
+🎯 Conclusión
+
+El sistema demuestra cómo una carga de trabajo multimedia puede ser distribuida eficientemente en un entorno tipo clúster utilizando MPI, logrando paralelismo tanto en segmentación como en composición final de video.
