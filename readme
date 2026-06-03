@@ -1,4 +1,4 @@
-📄 Sistema Distribuido de Procesamiento de Video con MPI + FFmpeg
+# 📄 Sistema Distribuido de Procesamiento de Video con MPI + FFmpeg
 
 Este proyecto implementa un sistema distribuido para el procesamiento de video utilizando MPI (Message Passing Interface) y FFmpeg, ejecutado sobre un clúster de máquinas virtuales.
 
