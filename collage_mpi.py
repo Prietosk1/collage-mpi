@@ -20,7 +20,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 # -------------------------
 if rank == 0:
 
-    tasks = list(range(1, 13))  # collages 1–12
+    tasks = list(range(1, 13))  # collages 1–12. Estrctura: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
     # Estructura: [[], [], ...] para asignar tareas a cada worker
     chunks = [[] for _ in range(size)]
